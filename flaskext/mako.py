@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 from mako.lookup import TemplateLookup
 from mako.template import Template
+from mako import exceptions
 from flask import request, session, get_flashed_messages, url_for, g
 from flask import _request_ctx_stack
 
@@ -52,6 +53,9 @@ def render_template(path, **kw):
         from flask import render_template
         return render_template(path, **kw)
     else:
-        return render(g=g, request=request,
-                      get_flashed_messages=get_flashed_messages,
-                      session=session, url_for=url_for, **kw)
+        try:
+            return render(g=g, request=request,
+                          get_flashed_messages=get_flashed_messages,
+                          session=session, url_for=url_for, **kw)
+        except:
+            return exceptions.html_error_template().render()
